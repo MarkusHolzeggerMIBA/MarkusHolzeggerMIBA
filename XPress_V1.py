@@ -45,8 +45,8 @@ def load_data(prodorder, material, begin, end, curveid):
     global log
 
     ## Connect DB
-    log.insert(END,'Connecting to EHS_MT SQL DWH\n')
-    cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=sasqlmibV02c\shared_prod1;DATABASE=EHS_MT;UID=EHS_MT_Reader;PWD=SQL4ehs&mt@miba!')
+    log.insert(END,'Connecting to IIOTMIBDB3010\n')
+    cnxn = pyodbc.connect('DRIVER={SQL Server};SERVER=SASQLMIBV02C\Shared_Prod1,2347;DATABASE=IIOTMIBDB3010;UID=IIOTMIBDB001_3010;PWD=MSA3010ppne6p')
 
     ## Define Query
     query = "SELECT 0 as TimeRef ,[MCH_WorkCenter], [MCOD_OrderNumber], [MCOD_Operation],[MCOD_OperationState],[MCOD_ConfirmationNumber],[MCOD_MaterialNumber],[SysDateTimeOPC],[PDT_Force_LR],[PDT_Force_UR],[PDT_Position_1_2],[PDT_Position_LR],[PDT_Position_UR],[PDT_Gesamthubzaehler],[PDT_Hubzeit_aktuell],0 as PDT_Force_LR_Rerf,0 as PDT_Force_UR_Rerf,0 as PDT_Position_LR_Rerf,0 as PDT_Position_UR_Rerf FROM [IIOTMIBDB3010].[dbo].[IIOT_DataStorage_HF_XPress]"
@@ -75,7 +75,7 @@ def load_data(prodorder, material, begin, end, curveid):
     ## Load Reference Curve
     if curveid != "":
         log.insert(END,"Loading reference curve\n")
-        query = "SELECT 0 as TimeRef ,[MCH_WorkCenter], [MCOD_OrderNumber], [MCOD_Operation],[MCOD_OperationState],[MCOD_ConfirmationNumber],[MCOD_MaterialNumber],[SysDateTimeOPC], [PDT_Force_LR], [PDT_Force_UR],[PDT_Position_1_2],[PDT_Position_LR], [PDT_Position_UR], [PDT_Gesamthubzaehler], [PDT_Hubzeit_aktuell],0 as PDT_Force_LR_Rerf,0 as PDT_Force_UR_Rerf,0 as PDT_Position_LR_Rerf,0 as PDT_Position_UR_Rerf  FROM [IIOTMIBDB3010].[dbo].[IIOT_DataStorage_HF_XPress]"
+        query = "SELECT 0 as TimeRef ,[MCH_WorkCenter], [MCOD_OrderNumber], [MCOD_Operation],[MCOD_OperationState],[MCOD_ConfirmationNumber],[MCOD_MaterialNumber],[SysDateTimeOPC], [PDT_Force_LR], [PDT_Force_UR],[PDT_Position_1_2],[PDT_Position_LR],[PDT_Position_UR], [PDT_Gesamthubzaehler], [PDT_Hubzeit_aktuell],0 as PDT_Force_LR_Rerf,0 as PDT_Force_UR_Rerf,0 as PDT_Position_LR_Rerf,0 as PDT_Position_UR_Rerf  FROM [IIOTMIBDB3010].[dbo].[IIOT_DataStorage_HF_XPress]"
         query = query   + " WHERE PDT_Gesamthubzaehler = '" + curveid + "'"
         start_time = time.time()
         dfRef = pd.read_sql_query(query,cnxn)
@@ -155,7 +155,7 @@ def load_data(prodorder, material, begin, end, curveid):
     x = 0
     startIndex = 0
     endIndex = -1
-    numParameters = 4
+    numParameters = 5
     while x < len(dfMainZeroArrayRef):
         y = startIndex
         while y < len(dfArrayRef):
@@ -185,13 +185,13 @@ def load_data(prodorder, material, begin, end, curveid):
             y += 1
         if  y == len(dfArrayRef):
             x += 1
-
+ 
 
     log.insert(END,'Sample Process Data\n')
     x = 0
     startIndex = 0
     endIndex = -1
-    numParameters = 4
+    numParameters = 5
     while x < len(dfMainZeroArray):
         y = startIndex
         while y < len(dfArray):
@@ -376,8 +376,8 @@ log.insert(END,'Visplore Data preperation for XPress\n')
 log.insert(END,'\n')
 log.insert(END,'Parameters:\n')
 log.insert(END,'===========\n')
-#log.insert(END,'CompanyCode: ' + parCompanyCode + "\n")
-#log.insert(END,'WorkCenter: ' + parWorkCenter + "\n")
+log.insert(END,'CompanyCode: ' + parCompanyCode + "\n")
+log.insert(END,'WorkCenter: ' + parWorkCenter + "\n")
 log.insert(END,'Begin: ' + parBegin + "\n")
 log.insert(END,'End: ' + parEnd + "\n")
 log.insert(END,'Operation: ' + str(parOperation) + "\n")
